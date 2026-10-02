@@ -51,7 +51,7 @@ cp .env.example .env
 | `ADMIN_EMAIL` | Email for the seeded admin account |
 | `ADMIN_PASSWORD` | Password for the seeded admin account |
 | `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Cloudinary credentials for media uploads |
-| `CLIENT_URL` | Frontend URL, used for CORS (default `http://localhost:5173`) |
+| `CLIENT_URL` | Frontend URL, used for CORS (default `http://localhost:5173`; comma-separated for multiple origins) |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | SMTP credentials for outgoing email (e.g. Gmail App Password) |
 | `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM_NUMBER` | Twilio credentials for SMS/OTP (optional) |
 | `MSG91_AUTH_KEY` / `MSG91_SENDER_ID` / `MSG91_TEMPLATE_ID` | MSG91 credentials for SMS/OTP, alternative to Twilio (optional) |
@@ -65,13 +65,15 @@ cp .env.example .env
 > npm install twilio
 > ```
 
-### 3. Seed the admin account
+### 3. Seed classes and sample website content
 
-This creates the **one** real admin login for the system, using `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` from your `.env`. Update these values to your actual admin's details before running it.
+This creates the standard classes, default school settings, and sample public website records (fees, syllabi, gallery photos, notices, and events) when those collections are empty. All example content is visibly marked `SAMPLE`; replace it with school-approved information before launch. Sample testimonials and student achievements are intentionally not generated. The script also creates the **one** real admin login if none exists, using `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` from your `.env`.
 
 ```bash
 npm run seed
 ```
+
+The seed is safe to re-run: it skips public-content collections that already contain records and never overwrites them. Sample fee structures are excluded from creating student charges. Sample gallery images are served by the backend from `/demo-gallery`.
 
 ### 4. Run the server
 
@@ -83,7 +85,7 @@ npm run dev
 npm start
 ```
 
-The API will be available at `http://localhost:5000` (or whatever `PORT` you set), and will accept requests from `CLIENT_URL`.
+The API will be available at `http://localhost:5000` (or whatever `PORT` you set), and will accept requests from `CLIENT_URL`. Outside production, HTTP origins on `localhost`, `127.0.0.1`, and `::1` are also accepted on any port so Vite's alternate development ports work. Production continues to require exact origins from `CLIENT_URL`.
 
 ## Security Notes
 

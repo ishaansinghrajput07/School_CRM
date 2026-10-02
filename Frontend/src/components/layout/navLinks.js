@@ -21,6 +21,7 @@ import {
   Trophy,
   MessageSquareQuote,
   CalendarPlus,
+  Mail,
 } from "lucide-react";
 
 export const ADMIN_LINKS = [
@@ -42,6 +43,7 @@ export const ADMIN_LINKS = [
   { to: "/admin/syllabus", label: "Syllabus", icon: BookOpen },
   { to: "/admin/toppers", label: "Toppers", icon: Trophy },
   { to: "/admin/feedback", label: "Feedback", icon: MessageSquareQuote },
+  { to: "/admin/contact-messages", label: "Contact Messages", icon: Mail },
   { to: "/admin/events", label: "Events", icon: CalendarPlus },
   { to: "/admin/admissions", label: "Admissions", icon: GraduationCap },
   { to: "/admin/settings", label: "School Settings", icon: Settings },

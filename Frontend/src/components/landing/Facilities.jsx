@@ -90,6 +90,11 @@ export default function Facilities() {
                     className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${i === active ? "opacity-100" : "opacity-0"}`}
                   />
                 ))}
+                {photos.some((photo) => photo.title?.startsWith("SAMPLE:")) && (
+                  <span role="note" className="absolute left-3 top-3 rounded-full bg-amber-100/95 px-3 py-1 text-xs font-semibold text-amber-900 shadow">
+                    Sample photos
+                  </span>
+                )}
 
                 {photos.length > 1 && (
                   <>

@@ -28,6 +28,11 @@ const getClasses = asyncHandler(async (req, res) => {
   res.json({ success: true, classes: withCounts });
 });
 
+const getPublicClasses = asyncHandler(async (req, res) => {
+  const classes = await Class.find().select("name order sections").sort({ order: 1 });
+  res.json({ success: true, classes });
+});
+
 const createClass = asyncHandler(async (req, res) => {
   const newClass = await Class.create(req.body);
   res.status(201).json({ success: true, class: newClass });
@@ -101,4 +106,4 @@ const assignStudents = asyncHandler(async (req, res) => {
   res.json({ success: true, message: `${studentIds.length} student(s) assigned`, warning });
 });
 
-module.exports = { getClasses, createClass, updateClass, updateAttendancePolicy, deleteClass, assignStudents };
+module.exports = { getClasses, getPublicClasses, createClass, updateClass, updateAttendancePolicy, deleteClass, assignStudents };

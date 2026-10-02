@@ -44,13 +44,26 @@ const parseAllowedOrigins = (raw) =>
     .filter(Boolean);
 
 const allowedOrigins = parseAllowedOrigins(process.env.CLIENT_URL);
+const isLocalDevelopmentOrigin = (origin) => {
+  if (process.env.NODE_ENV === "production") return false;
+
+  try {
+    const url = new URL(origin);
+    return url.protocol === "http:" && ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+  } catch {
+    return false;
+  }
+};
+
+const isAllowedOrigin = (origin) => {
+  if (!origin || allowedOrigins.length === 0) return true;
+  const normalizedOrigin = origin.replace(/\/+$/, "");
+  return allowedOrigins.includes(normalizedOrigin) || isLocalDevelopmentOrigin(normalizedOrigin);
+};
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.length === 0) return callback(null, true);
-    const normalizedOrigin = origin.replace(/\/+$/, "");
-    if (allowedOrigins.includes(normalizedOrigin)) return callback(null, true);
+    if (isAllowedOrigin(origin)) return callback(null, true);
     callback(new Error(`CORS: origin "${origin}" is not in CLIENT_URL`));
   },
   credentials: true,
@@ -94,6 +107,7 @@ const topperRoutes = require("./src/routes/topperRoutes");
 const feedbackRoutes = require("./src/routes/feedbackRoutes");
 const eventRoutes = require("./src/routes/eventRoutes");
 const admissionRoutes = require("./src/routes/admissionRoutes");
+const contactInquiryRoutes = require("./src/routes/contactInquiryRoutes");
 
 const app = express();
 app.set("trust proxy", 1);
@@ -121,6 +135,7 @@ app.use(mongoSanitize());
 app.use(hpp());
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/demo-gallery", express.static(path.join(__dirname, "public", "demo-gallery")));
 
 app.use(
   session({
@@ -203,6 +218,7 @@ app.use("/api/toppers", topperRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/admissions", admissionRoutes);
+app.use("/api/contact-inquiries", contactInquiryRoutes);
 
 // Error handling (must be last)
 app.use(notFound);
@@ -213,7 +229,7 @@ const PORT = process.env.PORT || 5000;
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigins.length ? allowedOrigins : "*",
+    origin: corsOptions.origin,
     credentials: true,
   },
 });

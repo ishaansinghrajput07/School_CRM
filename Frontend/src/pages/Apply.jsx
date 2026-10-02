@@ -24,6 +24,8 @@ const emptyForm = {
 export default function Apply() {
   const [form, setForm] = useState(emptyForm);
   const [classes, setClasses] = useState([]);
+  const [classesLoading, setClassesLoading] = useState(true);
+  const [classesFailed, setClassesFailed] = useState(false);
   const [parentMobileVerifyToken, setParentMobileVerifyToken] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -32,7 +34,11 @@ export default function Apply() {
     publicApi
       .classes()
       .then(({ data }) => setClasses(data.classes || []))
-      .catch(() => setClasses([]));
+      .catch((error) => {
+        console.error("Failed to load admission classes:", error);
+        setClassesFailed(true);
+      })
+      .finally(() => setClassesLoading(false));
   }, []);
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -120,12 +126,16 @@ export default function Apply() {
                   <FieldGroup title="Admission details" icon={School}>
                     <div>
                       <label className="label">Applying for class</label>
-                      <select required value={form.applyingForClass} onChange={set("applyingForClass")} className="input">
-                        <option value="">Select class</option>
+                      <select required disabled={classesLoading || classesFailed || classes.length === 0} value={form.applyingForClass} onChange={set("applyingForClass")} className="input">
+                        <option value="">
+                          {classesLoading ? "Loading classes..." : classesFailed ? "Unable to load classes" : classes.length === 0 ? "No classes available" : "Select class"}
+                        </option>
                         {classes.map((c) => (
                           <option key={c._id} value={c._id}>{c.name}</option>
                         ))}
                       </select>
+                      {classesFailed && <p role="alert" className="mt-1 text-sm text-red-600">Classes could not be loaded. Please refresh the page or contact the school.</p>}
+                      {!classesLoading && !classesFailed && classes.length === 0 && <p className="mt-1 text-sm text-navy-500">No classes are configured yet. Please contact the school.</p>}
                     </div>
                     <div>
                       <label className="label">Previous school (if any)</label>

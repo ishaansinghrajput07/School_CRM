@@ -39,6 +39,7 @@ const AdminGallery = lazy(() => import("./pages/admin/Gallery"));
 const AdminSyllabus = lazy(() => import("./pages/admin/Syllabus"));
 const AdminToppers = lazy(() => import("./pages/admin/Toppers"));
 const AdminFeedback = lazy(() => import("./pages/admin/Feedback"));
+const AdminContactInquiries = lazy(() => import("./pages/admin/ContactInquiries"));
 const AdminEvents = lazy(() => import("./pages/admin/Events"));
 const AdminAdmissions = lazy(() => import("./pages/admin/Admissions"));
 
@@ -135,6 +136,7 @@ export default function App() {
               <Route path="syllabus" element={<AdminSyllabus />} />
               <Route path="toppers" element={<AdminToppers />} />
               <Route path="feedback" element={<AdminFeedback />} />
+              <Route path="contact-messages" element={<AdminContactInquiries />} />
               <Route path="events" element={<AdminEvents />} />
               <Route path="admissions" element={<AdminAdmissions />} />
               <Route path="profile" element={<Profile />} />

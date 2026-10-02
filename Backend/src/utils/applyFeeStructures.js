@@ -2,6 +2,9 @@ const FeeStructure = require("../models/FeeStructure");
 const Fee = require("../models/Fee");
 const Student = require("../models/Student");
 
+const isSampleStructure = (structure) =>
+  /\(SAMPLE\)$/i.test(structure.feeType) || /^SAMPLE\b/i.test(structure.academicYear || "");
+
 /**
  * Creates one Fee record per FeeStructure defined for a class, for the given
  * student. Called whenever a student lands in a class - on signup, on manual
@@ -14,7 +17,7 @@ const Student = require("../models/Student");
 async function applyFeeStructuresToStudent(studentId, classId) {
   if (!classId) return [];
 
-  const structures = await FeeStructure.find({ class: classId });
+  const structures = (await FeeStructure.find({ class: classId })).filter((structure) => !isSampleStructure(structure));
   if (!structures.length) return [];
 
   const created = [];
@@ -38,6 +41,8 @@ async function applyFeeStructuresToStudent(studentId, classId) {
  * that class right now (not just future signups/promotions into it).
  */
 async function applyNewStructureToExistingStudents(structure) {
+  if (isSampleStructure(structure)) return [];
+
   const students = await Student.find({ class: structure.class }, "_id");
   const created = [];
   for (const s of students) {

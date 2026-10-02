@@ -8,7 +8,15 @@ const { emitToAdmins } = require("../utils/realtime");
 const submitFeedback = asyncHandler(async (req, res) => {
   const { name, role, context, rating, message } = req.body;
 
-  if (!name?.trim() || !message?.trim() || !rating) {
+  if (
+    typeof name !== "string" ||
+    typeof message !== "string" ||
+    !name.trim() ||
+    !message.trim() ||
+    rating === undefined ||
+    rating === null ||
+    rating === ""
+  ) {
     res.status(400);
     throw new Error("Name, rating and message are required");
   }
@@ -21,11 +29,19 @@ const submitFeedback = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Message is too long (max 1000 characters)");
   }
+  if (role !== undefined && !["parent", "student", "alumni", "staff", "other"].includes(role)) {
+    res.status(400);
+    throw new Error("Please select a valid feedback role");
+  }
+  if (context !== undefined && (typeof context !== "string" || context.trim().length > 60)) {
+    res.status(400);
+    throw new Error("Context must be 60 characters or fewer");
+  }
 
   const feedback = await Feedback.create({
     name: name.trim().slice(0, 100),
-    role: ["parent", "student", "alumni", "staff", "other"].includes(role) ? role : "parent",
-    context: context?.trim().slice(0, 60),
+    role: role || "parent",
+    context: context?.trim(),
     rating: numericRating,
     message: message.trim(),
     ip: req.ip,
@@ -40,7 +56,20 @@ const submitFeedback = asyncHandler(async (req, res) => {
     createdAt: feedback.createdAt,
   });
 
-  res.status(201).json({ success: true, message: "Thank you for your feedback!" });
+  res.status(201).json({
+    success: true,
+    message: "Thank you for your feedback! It has been saved and is awaiting review.",
+    feedback: {
+      id: feedback._id,
+      name: feedback.name,
+      role: feedback.role,
+      context: feedback.context,
+      rating: feedback.rating,
+      message: feedback.message,
+      status: feedback.status,
+      createdAt: feedback.createdAt,
+    },
+  });
 });
 
 // @desc    Approved feedback for the public testimonials carousel

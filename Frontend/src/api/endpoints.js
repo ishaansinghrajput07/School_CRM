@@ -233,6 +233,13 @@ export const feedbackApi = {
   remove: (id) => api.delete(`/feedback/${id}`),
 };
 
+export const contactInquiriesApi = {
+  submit: (data) => api.post("/contact-inquiries", data),
+  list: (params) => api.get("/contact-inquiries", { params }),
+  update: (id, data) => api.patch(`/contact-inquiries/${id}`, data),
+  remove: (id) => api.delete(`/contact-inquiries/${id}`),
+};
+
 export const eventsApi = {
   publicList: () => api.get("/events/public"),
   list: (params) => api.get("/events", { params }),

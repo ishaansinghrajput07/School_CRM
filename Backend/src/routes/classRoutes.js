@@ -1,11 +1,11 @@
 const express = require("express");
-const { getClasses, createClass, updateClass, updateAttendancePolicy, deleteClass, assignStudents } = require("../controllers/classController");
+const { getClasses, getPublicClasses, createClass, updateClass, updateAttendancePolicy, deleteClass, assignStudents } = require("../controllers/classController");
 const { protect, authorize } = require("../middleware/auth");
 
 const router = express.Router();
 
 // Public: the signup form needs class names before the applicant has an account
-router.get("/public", getClasses);
+router.get("/public", getPublicClasses);
 
 router.use(protect);
 

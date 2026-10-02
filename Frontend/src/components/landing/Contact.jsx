@@ -1,12 +1,33 @@
 import { useState } from "react";
 import { Mail, MapPin, Phone, Clock, Facebook, Instagram, Youtube, QrCode } from "lucide-react";
+import toast from "react-hot-toast";
 import useReveal from "../../hooks/useReveal";
 import ParallaxDecor from "./ParallaxDecor";
 import schoolBuildingPhoto from "../../assets/hero/hero1.webp";
+import { contactInquiriesApi } from "../../api/endpoints";
 
 export default function Contact() {
   const ref = useReveal();
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [form, setForm] = useState({ name: "", phone: "", email: "", message: "" });
+
+  const updateForm = (event) => setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+
+  const submit = async (event) => {
+    event.preventDefault();
+    setSending(true);
+    try {
+      const { data } = await contactInquiriesApi.submit(form);
+      setSent(true);
+      setForm({ name: "", phone: "", email: "", message: "" });
+      toast.success(data.message || "Message sent");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Couldn't send your message. Please try again.");
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <section id="contact" className="relative overflow-hidden bg-paper px-6 py-24">
@@ -47,33 +68,30 @@ export default function Contact() {
               <div className="flex flex-1 flex-col items-center justify-center py-12 text-center">
                 <p className="font-serif text-lg font-semibold text-navy-900">Message sent</p>
                 <p className="mt-1 text-sm text-navy-500">Our office will reach out within one business day.</p>
+                <button type="button" onClick={() => setSent(false)} className="mt-4 text-sm font-semibold text-teal-700 hover:text-teal-900">
+                  Send another message
+                </button>
               </div>
             ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSent(true);
-                }}
-                className="grid gap-4"
-              >
+              <form onSubmit={submit} className="grid gap-4">
                 <div>
                   <label className="label">Parent's name</label>
-                  <input required className="input" placeholder="Your name" />
+                  <input required name="name" maxLength={100} value={form.name} onChange={updateForm} className="input" placeholder="Your name" />
                 </div>
                 <div>
                   <label className="label">Phone number</label>
-                  <input required className="input" placeholder="Your phone number" />
+                  <input required name="phone" type="tel" maxLength={30} value={form.phone} onChange={updateForm} className="input" placeholder="Your phone number" />
                 </div>
                 <div>
                   <label className="label">Email</label>
-                  <input required type="email" className="input" placeholder="you@example.com" />
+                  <input required name="email" type="email" maxLength={254} value={form.email} onChange={updateForm} className="input" placeholder="you@example.com" />
                 </div>
                 <div>
                   <label className="label">Message</label>
-                  <textarea required rows={4} className="input" placeholder="Tell us how we can help..." />
+                  <textarea required name="message" rows={4} maxLength={2000} value={form.message} onChange={updateForm} className="input" placeholder="Tell us how we can help..." />
                 </div>
-                <button type="submit" className="btn-primary !bg-navy-900 hover:!bg-navy-800">
-                  Send Message
+                <button type="submit" disabled={sending} className="btn-primary !bg-navy-900 hover:!bg-navy-800 disabled:cursor-not-allowed disabled:opacity-60">
+                  {sending ? "Sending..." : "Send Message"}
                 </button>
               </form>
             )}

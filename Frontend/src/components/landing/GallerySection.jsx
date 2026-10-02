@@ -49,6 +49,7 @@ export default function GallerySection() {
   }, [lightboxIndex, closeLightbox, showPrev, showNext]);
 
   const active = lightboxIndex !== null ? photos[lightboxIndex] : null;
+  const hasSamplePhotos = photos.some((photo) => photo.title?.startsWith("SAMPLE:"));
 
   return (
     <section id="gallery" className="relative overflow-hidden bg-paper py-20">
@@ -57,7 +58,14 @@ export default function GallerySection() {
         <div className="mb-8 text-center">
           <p className="mb-2 text-xs font-bold uppercase tracking-widest text-teal-700">Photo Gallery</p>
           <h2 className="font-serif text-3xl font-semibold text-navy-900 sm:text-4xl">Glimpses of School Life</h2>
-          <p className="mx-auto mt-3 max-w-xl text-navy-500">Sports day, annual fest, classrooms and campus - straight from our own students.</p>
+          <p className="mx-auto mt-3 max-w-xl text-navy-500">
+            {hasSamplePhotos ? "Illustrative preview images across campus and school activities." : "Sports day, annual fest, classrooms and campus - straight from our own students."}
+          </p>
+          {!loading && hasSamplePhotos && (
+            <p role="note" className="mx-auto mt-3 max-w-xl text-sm font-medium text-amber-800">
+              Illustrative sample images are displayed. Replace them with actual school photos before publication.
+            </p>
+          )}
         </div>
 
         <div className="mb-3 flex flex-wrap justify-center gap-2">

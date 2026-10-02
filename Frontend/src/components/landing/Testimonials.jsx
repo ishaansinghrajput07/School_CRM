@@ -309,7 +309,16 @@ function FeedbackForm() {
     setError("");
     setSubmitting(true);
     try {
-      await feedbackApi.submit({ name, role, context, rating, message });
+      const { data } = await feedbackApi.submit({
+        name: name.trim(),
+        role,
+        context: context.trim(),
+        rating,
+        message: message.trim(),
+      });
+      if (!data.success) {
+        throw new Error(data.message || "Feedback was not saved");
+      }
       setSubmitted(true);
     } catch (err) {
       setError(err.response?.data?.message || "Couldn't submit right now - please try again");
@@ -333,7 +342,7 @@ function FeedbackForm() {
               <CheckCircle2 size={26} />
             </motion.div>
             <p className="font-serif text-lg font-semibold text-navy-900">Thank you!</p>
-            <p className="mt-1 text-sm text-navy-500">Our team reviews every submission before it appears here.</p>
+            <p className="mt-1 text-sm text-navy-500">Your feedback has been saved. Our team reviews every submission before it appears here.</p>
           </motion.div>
         ) : (
           <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={handleSubmit}>
@@ -341,15 +350,15 @@ function FeedbackForm() {
             <p className="mt-1 text-sm text-navy-500">We'd love to hear your thoughts &amp; suggestions.</p>
 
             <div className="mt-4 grid grid-cols-2 gap-2 text-left">
-              <input required value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className="input rounded-xl text-sm" />
-              <select value={role} onChange={(e) => setRole(e.target.value)} className="input rounded-xl text-sm">
+              <input required maxLength={100} value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className="input rounded-xl text-sm" />
+              <select required value={role} onChange={(e) => setRole(e.target.value)} className="input rounded-xl text-sm">
                 <option value="parent">Parent</option>
                 <option value="student">Student</option>
                 <option value="alumni">Alumnus/Alumna</option>
                 <option value="staff">Staff</option>
               </select>
             </div>
-            <input value={context} onChange={(e) => setContext(e.target.value)} placeholder="e.g. Class VI, or graduating year" className="input mt-2 rounded-xl text-left text-sm" />
+            <input maxLength={60} value={context} onChange={(e) => setContext(e.target.value)} placeholder="e.g. Class VI, or graduating year" className="input mt-2 rounded-xl text-left text-sm" />
 
             <div className="mt-4 flex justify-center gap-1.5">
               {Array.from({ length: 5 }).map((_, i) => {

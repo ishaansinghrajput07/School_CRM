@@ -102,6 +102,11 @@ export default function AdmissionsFees() {
           <div className={`mx-auto ${sidePhoto ? "grid max-w-4xl gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center" : "max-w-xl"}`}>
             <div>
               <div id="fee-structure-card" className="premium-card overflow-hidden rounded-2xl border-2 border-navy-900/10 bg-white shadow-md">
+                {structures.some((fee) => /sample/i.test(fee.feeType)) && (
+                  <p role="note" className="border-b border-amber-200 bg-amber-50 px-6 py-3 text-xs font-semibold text-amber-900">
+                    Sample amounts for demonstration only — these are not official school fees. Please confirm current fees with the school office.
+                  </p>
+                )}
                 <p className="bg-paper px-6 py-3 text-xs font-bold uppercase tracking-wide text-navy-500">
                   {selectedClassName} — Annual Fee Details
                 </p>
