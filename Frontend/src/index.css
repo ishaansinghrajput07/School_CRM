@@ -1,0 +1,259 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+    /* Navbar is position:fixed (~72px tall) plus its decorative bottom
+       notch - without this, every #anchor nav link (About, Academics,
+       Gallery, Parents Say, Contact...) scrolls the target section's
+       heading right underneath the fixed bar, hiding it. 96px = navbar
+       height + a little breathing room above the heading. */
+    scroll-padding-top: 96px;
+  }
+  :focus-visible {
+    outline: 2px solid #2C7A7B;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-navy-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-600 focus-visible:outline-none disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-navy-200 bg-white px-4 py-2.5 text-sm font-semibold text-navy-700 transition-colors hover:bg-navy-50 focus-visible:outline-none;
+  }
+  .input {
+    @apply w-full rounded-lg border border-navy-200 bg-white px-3.5 py-2.5 text-sm text-navy-900 placeholder:text-navy-300 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-navy-700;
+  }
+  .card {
+    @apply rounded-xl border border-navy-100 bg-white p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:border-navy-200;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  /* --- App/dashboard motion (student, teacher, admin, parent) --- */
+
+  .page-enter {
+    animation: page-fade-up 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    /* No fill-mode: once the animation ends, transform reverts to none.
+       A lingering transform on this wrapper (from fill-mode: both/forwards)
+       turns it into the containing block for every position:fixed modal in
+       the app, breaking their centering - that was the Fees modal bug. */
+  }
+
+  /* Stagger children of any list/table body: give each row a --i index via
+     inline style (style={{ '--i': index }}) and this handles the rest. */
+  .stagger-rows > * {
+    opacity: 0;
+    animation: row-fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+
+  .count-up {
+    animation: count-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  /* Subtle tint so the main content area doesn't read as flat white/grey */
+  .app-bg {
+    background-color: #f6f7fb;
+    background-image:
+      radial-gradient(60% 40% at 100% 0%, rgba(108, 92, 231, 0.05), transparent 60%),
+      radial-gradient(50% 40% at 0% 100%, rgba(44, 122, 123, 0.05), transparent 60%);
+  }
+
+  /* Shimmer skeleton placeholder - used everywhere content is still loading
+     so the app never shows a blank white flash while data/network settle. */
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+    background-color: #e9edf2;
+  }
+  .skeleton-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+    animation: shimmer-sweep 1.6s ease-in-out infinite;
+  }
+
+  /* --- Landing page only, below --- */
+
+  /* Signature background: faint ruled-notebook lines on warm paper, instead
+     of a dark gradient mesh - grounds the hero in "school exercise book"
+     rather than generic SaaS product marketing. */
+  .ruled-paper {
+    background-color: theme("colors.paper.DEFAULT");
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 27px,
+      rgba(30, 58, 95, 0.07) 27px,
+      rgba(30, 58, 95, 0.07) 28px
+    );
+  }
+  .margin-rule {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 64px;
+    width: 1px;
+    background: rgba(224, 122, 95, 0.25);
+  }
+
+  /* Rubber-stamp badge: dashed border, slight rotation - used for stats and
+     the "Est." mark instead of glossy gradient stat blocks. */
+  .stamp {
+    @apply inline-flex flex-col items-center justify-center rounded-full border-2 border-dashed text-center;
+    transform: rotate(-4deg);
+  }
+
+  .paper-card {
+    @apply rounded-2xl border border-navy-900/10 bg-white/80 backdrop-blur-sm;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Premium hover system for the public site only - lift + shadow + border
+     highlight + slight scale, per the redesign brief. Kept separate from
+     the shared .card (used across the dashboard app) so this doesn't
+     change hover behavior in admin/teacher/student screens. */
+  .premium-card {
+    @apply transition-all duration-300 ease-out;
+  }
+  .premium-card:hover {
+    @apply -translate-y-1.5 border-amber-400/60 shadow-xl;
+  }
+  .premium-icon {
+    @apply transition-transform duration-300 ease-out;
+  }
+  .premium-card:hover .premium-icon {
+    @apply scale-110 -rotate-3;
+  }
+
+  .btn-glow {
+    @apply transition-all duration-300 ease-out;
+  }
+  .btn-glow:hover {
+    @apply -translate-y-0.5 shadow-[0_10px_30px_-8px_rgba(30,58,95,0.45)];
+  }
+}
+
+@keyframes page-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes row-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes count-pop {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift,
+  .animate-drift-slow {
+    animation: none !important;
+  }
+  .reveal {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .page-enter,
+  .stagger-rows > *,
+  .count-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .animate-fade-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .animate-float,
+  .animate-bounce {
+    animation: none !important;
+  }
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none !important;
+  }
+  .skeleton-shimmer::after {
+    animation: none !important;
+  }
+}
+
+/* Scopes "Download Fee Structure PDF" to just #fee-structure-card instead
+   of printing the whole homepage. Only active while the button's temporary
+   body class is present (see AdmissionsFees.jsx). */
+@media print {
+  /* The #admissions section has overflow-hidden for its parallax decor
+     (ParallaxDecor.jsx) - during print that would clip the absolutely
+     positioned #fee-structure-card below, so it's lifted for print only. */
+  #admissions {
+    overflow: visible !important;
+  }
+
+  body.printing-fee-structure * {
+    visibility: hidden;
+  }
+  body.printing-fee-structure #fee-structure-card,
+  body.printing-fee-structure #fee-structure-card * {
+    visibility: visible;
+  }
+  body.printing-fee-structure #fee-structure-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+  }
+
+  @layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+  }
+  :focus-visible {
+    outline: 2px solid #2C7A7B;
+    outline-offset: 2px;
+  }
+}
+}

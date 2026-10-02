@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Environment variables - contains MONGO_URI, JWT_SECRET, SMTP/Twilio/MSG91
+# credentials, admin password. NEVER commit these.
+.env
+.env.local
+.env.*.local
+
+# User-uploaded files (student photos, assignments, project submissions)
+uploads/*
+!uploads/.gitkeep
+!uploads/projects/.gitkeep
+!uploads/assignments/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Testing / coverage
+coverage/
+
+# Misc
+*.local
+.cache/

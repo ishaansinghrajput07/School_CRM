@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /signup
+Disallow: /student
+Disallow: /teacher
+Disallow: /admin
+Disallow: /parent
+
+Sitemap: https://www.your-school-domain.com/sitemap.xml

@@ -1,0 +1,91 @@
+import {
+  LayoutDashboard,
+  Users,
+  CalendarCheck,
+  Wallet,
+  FileText,
+  Banknote,
+  Calculator,
+  Ticket,
+  ClipboardList,
+  Megaphone,
+  GraduationCap,
+  IdCard,
+  BookOpen,
+  FolderKanban,
+  Award,
+  CalendarDays,
+  ClipboardCheck,
+  Settings,
+  Image,
+  Trophy,
+  MessageSquareQuote,
+  CalendarPlus,
+} from "lucide-react";
+
+export const ADMIN_LINKS = [
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/admin/students", label: "Students", icon: Users },
+  { to: "/admin/subjects", label: "Subjects", icon: BookOpen },
+  { to: "/admin/academics", label: "Academics", icon: GraduationCap },
+  { to: "/admin/calendar", label: "Calendar", icon: CalendarDays },
+  { to: "/admin/exams", label: "Exams", icon: ClipboardCheck },
+  { to: "/admin/attendance", label: "Attendance", icon: CalendarCheck },
+  { to: "/admin/fees", label: "Fees", icon: Wallet },
+  { to: "/admin/invoices", label: "Invoices", icon: FileText },
+  { to: "/admin/salaries", label: "Salaries", icon: Banknote },
+  { to: "/admin/accounting", label: "Accounting", icon: Calculator },
+  { to: "/admin/tickets", label: "Tickets", icon: Ticket },
+  { to: "/admin/tracking", label: "Requests", icon: ClipboardList },
+  { to: "/admin/notices", label: "Notice Board", icon: Megaphone },
+  { to: "/admin/gallery", label: "Gallery", icon: Image },
+  { to: "/admin/syllabus", label: "Syllabus", icon: BookOpen },
+  { to: "/admin/toppers", label: "Toppers", icon: Trophy },
+  { to: "/admin/feedback", label: "Feedback", icon: MessageSquareQuote },
+  { to: "/admin/events", label: "Events", icon: CalendarPlus },
+  { to: "/admin/admissions", label: "Admissions", icon: GraduationCap },
+  { to: "/admin/settings", label: "School Settings", icon: Settings },
+];
+
+export const STUDENT_LINKS = [
+  { to: "/student", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/student/assignments", label: "Assignments", icon: BookOpen },
+  { to: "/student/projects", label: "Projects", icon: FolderKanban },
+  { to: "/student/results", label: "Results", icon: Award },
+  { to: "/student/exams", label: "Exams", icon: ClipboardCheck },
+  { to: "/student/calendar", label: "Calendar", icon: CalendarDays },
+  { to: "/student/attendance", label: "Attendance", icon: CalendarCheck },
+  { to: "/student/fees", label: "Fees", icon: Wallet },
+  { to: "/student/tickets", label: "Tickets", icon: Ticket },
+  { to: "/student/tracking", label: "Requests", icon: ClipboardList },
+  { to: "/student/notices", label: "Notices", icon: Megaphone },
+  { to: "/student/events", label: "Events", icon: CalendarPlus },
+  { to: "/student/id-card", label: "My Profile", icon: IdCard },
+];
+
+export const TEACHER_LINKS = [
+  { to: "/teacher", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/teacher/my-classes", label: "My Classes", icon: Users },
+  { to: "/teacher/salary", label: "My Salary", icon: Banknote },
+  { to: "/teacher/tickets", label: "Tickets", icon: Ticket },
+  { to: "/teacher/attendance", label: "Attendance", icon: CalendarCheck },
+  { to: "/teacher/assignments", label: "Assignments", icon: BookOpen },
+  { to: "/teacher/projects", label: "Projects", icon: FolderKanban },
+  { to: "/teacher/marks", label: "Marks Entry", icon: Award },
+  { to: "/teacher/exams", label: "Exams", icon: ClipboardCheck },
+  { to: "/teacher/calendar", label: "Calendar", icon: CalendarDays },
+  { to: "/teacher/notices", label: "Notice Board", icon: Megaphone },
+  { to: "/teacher/events", label: "Events", icon: CalendarPlus },
+];
+
+export const PARENT_LINKS = [
+  { to: "/parent", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/parent/events", label: "Events", icon: CalendarPlus },
+];
+
+export const NAV_LINKS_BY_ROLE = {
+  admin: ADMIN_LINKS,
+  teacher: TEACHER_LINKS,
+  parent: PARENT_LINKS,
+  student: STUDENT_LINKS,
+};
